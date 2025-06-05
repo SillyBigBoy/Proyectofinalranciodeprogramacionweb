@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Macros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Calculadora de Macros Nutricionales</h1>
+        
+        <!-- Formulario para agregar/editar alimentos -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 id="form-title">Agregar Nuevo Alimento</h2>
+            </div>
+            <div class="card-body">
+                <form id="alimento-form">
+                    <input type="hidden" id="alimento-id">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del Alimento</label>
+                        <input type="text" class="form-control" id="nombre" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="proteinas" class="form-label">Proteínas (g por 100g)</label>
+                            <input type="number" step="0.1" class="form-control" id="proteinas" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="carbohidratos" class="form-label">Carbohidratos (g por 100g)</label>
+                            <input type="number" step="0.1" class="form-control" id="carbohidratos" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="calorias" class="form-label">Calorías (kcal por 100g)</label>
+                            <input type="number" step="0.1" class="form-control" id="calorias" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="button" id="cancel-edit" class="btn btn-secondary" style="display:none;">Cancelar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Calculadora -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Calculadora</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="select-alimento" class="form-label">Seleccionar Alimento</label>
+                        <select class="form-select" id="select-alimento">
+                            <option value="">-- Seleccione un alimento --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="cantidad" class="form-label">Cantidad (gramos)</label>
+                        <input type="number" class="form-control" id="cantidad" value="100">
+                    </div>
+                </div>
+                <button id="calcular-btn" class="btn btn-success">Calcular Macros</button>
+                
+                <div id="resultados" class="mt-4" style="display:none;">
+                    <h4>Resultados para <span id="nombre-alimento"></span> (<span id="cantidad-alimento"></span>g)</h4>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nutriente</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Proteínas</td>
+                                <td id="result-proteinas">0 g</td>
+                            </tr>
+                            <tr>
+                                <td>Carbohidratos</td>
+                                <td id="result-carbohidratos">0 g</td>
+                            </tr>
+                            <tr>
+                                <td>Calorías</td>
+                                <td id="result-calorias">0 kcal</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de alimentos -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Mis Alimentos</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Proteínas (g/100g)</th>
+                            <th>Carbohidratos (g/100g)</th>
+                            <th>Calorías (kcal/100g)</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alimentos-table">
+                        <!-- Los alimentos se cargarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
