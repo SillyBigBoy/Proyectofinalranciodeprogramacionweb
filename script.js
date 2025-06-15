@@ -61,6 +61,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const calorias = parseFloat(document.getElementById('calorias').value);
         
         const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            alert('Debes iniciar sesión para realizar esta acción.');
+            window.location.href = 'auth/login.html';
+            return;
+        }
         
         try {
             if (editando) {
