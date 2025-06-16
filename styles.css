@@ -25,3 +25,19 @@ body {
 .table {
     margin-top: 15px;
 }
+.navbar {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#navbar-username {
+  font-weight: 500;
+}
+
+#logout-btn {
+  transition: all 0.3s ease;
+}
+
+#logout-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}

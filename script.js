@@ -1,16 +1,41 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-const supabaseUrl = 'https://fktmxoovyfmwdxekqebs.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrdG14b292eWZtd2R4ZWtxZWJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3NTUyNDAsImV4cCI6MjA2NDMzMTI0MH0.00eXkyrej32Ft95fcgXnAK9r4DX9tTjpe8BWZDmi8G0'
+
+const supabaseUrl = 'https://ubcwvjypbcvnyyfcmjvi.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InViY3d2anlwYmN2bnl5ZmNtanZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwNDk4NjksImV4cCI6MjA2NTYyNTg2OX0.PXmnTCcN1Vu14SuMyCX-M3ZmqDbKVTYuqiLd5OR4qFo'
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Verificar sesión
-    const isAuthenticated = localStorage.getItem('authenticated');
-    if (!isAuthenticated) {
+// Mostrar nombre de usuario y botón de logout
+async function setupUserUI() {
+  const { data: { user } } = await supabase.auth.getUser();
+  const username = localStorage.getItem('username');
+  
+  // Mostrar nombre de usuario
+  document.getElementById('navbar-username').textContent = `Hola, ${username}`;
+  
+  // Configurar botón de logout
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      localStorage.removeItem('authenticated');
+      localStorage.removeItem('username');
+      window.location.href = 'auth/login.html';
+    } catch (error) {
+      alert('Error al cerrar sesión: ' + error.message);
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
         window.location.href = 'auth/login.html';
         return;
     }
+
+    // Verificar sesión
+   
     
     // Elementos del DOM
     const alimentoForm = document.getElementById('alimento-form');
@@ -26,23 +51,48 @@ document.addEventListener('DOMContentLoaded', function() {
     let editando = false;
     let alimentoEditId = null;
     
-    // Configurar botón de logout
-    logoutBtn.textContent = 'Cerrar Sesión';
-    logoutBtn.className = 'btn btn-danger position-absolute top-0 end-0 m-3';
-    logoutBtn.onclick = () => {
-        localStorage.removeItem('authenticated');
-        localStorage.removeItem('username');
-        supabase.auth.signOut();
-        window.location.href = 'auth/login.html';
-    };
-    document.body.prepend(logoutBtn);
-    
+
     // Inicializar la aplicación
     async function init() {
         await renderAlimentosSelect();
         await renderAlimentosTable();
         setupEventListeners();
     }
+    // Obtener alimentos del usuario actual
+async function loadAlimentos() {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    const { data: alimentos, error } = await supabase
+        .from('alimentos')
+        .select('*')
+        .eq('user_id', user.id); // RLS ya filtra automáticamente
+
+    if (error) {
+        console.error('Error cargando alimentos:', error);
+        return [];
+    }
+
+    return alimentos;
+}
+
+// Añadir nuevo alimento
+async function addAlimento(nombre, proteinas, carbohidratos, calorias) {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    const { error } = await supabase
+        .from('alimentos')
+        .insert([
+            { 
+                user_id: user.id,
+                nombre,
+                proteinas,
+                carbohidratos,
+                calorias 
+            }
+        ]);
+
+    if (error) throw error;
+}
     
     // Configurar event listeners
     function setupEventListeners() {
@@ -259,4 +309,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar la aplicación
     init();
+    setupUserUI();
+    
 });
