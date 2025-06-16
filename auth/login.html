@@ -38,5 +38,15 @@
 
     <script type="module" src="../auth.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const registerForm = document.getElementById('register-form');
+            if (registerForm) {
+                registerForm.addEventListener('submit', async (e) => {
+                    // ...tu código de registro...
+                });
+            }
+        });
+    </script>
 </body>
 </html>
